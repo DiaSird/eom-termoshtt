@@ -29,10 +29,14 @@ where
         .collect();
     data.windows(2)
         .map(|w| {
+            // w = [prev, next] in data
             let dt = w[0].0;
+            // struct Name(arg1, arg2);
+            // let w = Name(1.0, 2.0);
+            // w.0 == 1.0, w.1 == 2.0
             let dev = (&w[1].1 - &w[0].1).norm();
             (dt, dev)
-        })
+        }) 
         .collect()
 }
 

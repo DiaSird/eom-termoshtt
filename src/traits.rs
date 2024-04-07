@@ -48,7 +48,7 @@ pub trait TimeEvolution: ModelSpec + TimeStep {
     ) -> &'a mut ArrayBase<S, Self::Dim>
     where
         S: DataMut<Elem = Self::Scalar>;
-
+    
     /// calculate n-step
     fn iterate_n<'a, S>(
         &mut self,
@@ -66,6 +66,14 @@ pub trait TimeEvolution: ModelSpec + TimeStep {
 }
 
 /// Time evolution schemes
+// dx/dt = f(t): rhs()
+// [x(t + dt) - x(t)] / dt = f(t)
+// x(t + dt) = x(t) + f(t) * dt = x(t) + dx/dt * dt: Taylor (linear) = Euler method
+// 
+// f(x + dx) = f(a) + f`(a) * h
+// f`(a) = (f(x + dx) - f(a)) / dx
+// f(x + 0) = f(0) + f`(0) * x: Maclaurin (linear)
+// f(x + a) = f(a) + f`(a) * (x - a): Taylor (linear)
 pub trait Scheme: TimeEvolution {
     type Core: ModelSpec<Scalar = Self::Scalar, Dim = Self::Dim>;
     /// Initialize with a core implementation
