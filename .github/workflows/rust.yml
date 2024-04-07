@@ -18,9 +18,8 @@ jobs:
         - name: Install dependencies
           run: pip install -r ./requirements.txt
 
-        - run: cd ./models/goy_shell
-        - run: cargo run --release > goy.csv
-        - run: python ./GOY.py
+        - run: cd ./models/goy_shell;cargo run --release > goy.csv
+        - run: cd ./models/goy_shell;python ./GOY.py
 
   # # test-static:
   ##    runs-on: ubuntu-latest
