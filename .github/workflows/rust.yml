@@ -21,6 +21,16 @@ jobs:
         - run: cd ./models/goy_shell;cargo run --release > goy.csv
         - run: cd ./models/goy_shell;python ./GOY.py
 
+        - name: Upload a Build Artifact
+          if: matrix.platform == 'windows-latest'
+          uses: actions/upload-artifact@v4
+          with:
+            name: GOY results
+            path: |
+              ./models/goy_shell/GOY.png
+              ./models/goy_shell/error.png
+              ./models/goy_shell/target/release/goy_shell.exe
+
   # # test-static:
   ##    runs-on: ubuntu-latest
   #   steps:
