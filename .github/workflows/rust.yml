@@ -3,22 +3,41 @@ name: Rust
 on: [push, pull_request]
 
 jobs:
-  test-static:
-    runs-on: ubuntu-latest
+  test-win-models:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
     steps:
-    - uses: actions/checkout@v1
-    - name: apt
-      run: sudo apt update && sudo apt install -y gfortran
-    - uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --features=static --no-default-features
+        - uses: actions/checkout@v4
+        - name: Set up Python 3.8
+          uses: actions/setup-python@v5
+          with:
+            python-version: 3.8
+        - name: Install dependencies
+          run: pip install -r ./requirements.txt
 
-  test-intel-mkl:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --features=intel-mkl --no-default-features
+        - run: cd ./models
+        - run: cargo run --release > goy.csv
+        - run: python ./GOY.py
+
+  # # test-static:
+  ##    runs-on: ubuntu-latest
+  #   steps:
+  ##    - uses: actions/checkout@v1
+  # #   - name: apt
+  ##      run: sudo apt update && sudo apt install -y gfortran
+  # #   - uses: actions-rs/cargo@v1
+  # #     with:
+  # #       command: test
+  # #       args: --features=static --no-default-features
+
+  # # test-intel-mkl:
+  ##    runs-on: ubuntu-latest
+  #   steps:
+  # #   - uses: actions/checkout@v1
+  # #   - uses: actions-rs/cargo@v1
+  # #     with:
+  # #       command: test
+  # #       args: --features=intel-mkl --no-default-features
